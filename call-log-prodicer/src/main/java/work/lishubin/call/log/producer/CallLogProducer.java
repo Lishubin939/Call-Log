@@ -1,5 +1,8 @@
 package work.lishubin.call.log.producer;
 
+import com.google.common.base.Strings;
+
+import java.io.*;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -84,7 +87,7 @@ public class CallLogProducer {
      * 数据格式为：
      * caller,callee,time,duration
      */
-    public String product(){
+    private String product(){
 
         String result = null;
 
@@ -127,10 +130,44 @@ public class CallLogProducer {
     }
 
 
+    /**
+     * 根据filePath 将生产数据存入filePath
+     * @param filePath
+     */
+    public void writeLog(String filePath){
+
+        try {
+            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(filePath), "UTF-8");
+            writer.write(String.format("%s%s",product(),"\n"));
+            //不使用缓存，每写一条就向file中添加一条
+            writer.flush();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
+    public static void main(String[] args) {
 
+        if (Strings.isNullOrEmpty(args[0])){
+            System.err.println("parameter is invalid ,please check ");
+            System.exit(-1);
+        }
 
+        CallLogProducer callLogProducer = new CallLogProducer();
+        callLogProducer.init();
+
+        while (true){
+
+            callLogProducer.writeLog(args[0]);
+
+        }
+    }
 
 
 

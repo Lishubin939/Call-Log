@@ -22,7 +22,7 @@ public class CallLogProducerTest {
     @Test
     public void productTest(){
 
-        System.out.println(callLogProducer.product());
+        System.out.println();
 
     }
 
