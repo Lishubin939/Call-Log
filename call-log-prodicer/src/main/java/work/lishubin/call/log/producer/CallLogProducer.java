@@ -135,18 +135,29 @@ public class CallLogProducer {
      * @param filePath
      */
     public void writeLog(String filePath){
-
+        OutputStreamWriter writer = null;
+        File file = new File(filePath);
         try {
-            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(filePath), "UTF-8");
+            writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
             writer.write(String.format("%s%s",product(),"\n"));
             //不使用缓存，每写一条就向file中添加一条
             writer.flush();
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (writer!=null){
+                try {
+                    writer.close();
+                    writer=null;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
     }
@@ -154,7 +165,7 @@ public class CallLogProducer {
 
     public static void main(String[] args) {
 
-        if (Strings.isNullOrEmpty(args[0])){
+        if (args[0]!=null&&"".equals(args[0].trim())){
             System.err.println("parameter is invalid ,please check ");
             System.exit(-1);
         }
